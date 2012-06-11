@@ -1,3 +1,4 @@
+package readers;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -67,51 +68,55 @@ public class new_participant_data {
         //System.out.println(data_matrix.get(i));
       }
       
-      String log_filename = directory+"LOGS/LOG-"+participant_num+".txt";
-      CsvReader log_data = new CsvReader(log_filename, '\n');
-      int log_baseline = 0;
-      int first_condition = 0;
-      int second_condition = 0;
-      int third_condition = 0;
-      int fourth_condition = 0;
-      int line_counter = 0;
-      while (log_data.readRecord()) {
-        StringTokenizer curr_line = new StringTokenizer(log_data.getRawRecord());
-        while (curr_line.hasMoreTokens()) {
-          String curr_token = curr_line.nextToken();
-          if (line_counter == 0) {
-            log_baseline = new Integer(curr_token);
-          }
-          if (line_counter == 1) {
-            first_condition = new Integer(curr_token);
-          }
-          if (line_counter == 2) {
-            second_condition = new Integer(curr_token);
-          }
-          if (line_counter == 3) {
-            third_condition = new Integer(curr_token);
-          }
-          if (line_counter == 4) {
-            fourth_condition = new Integer(curr_token);
-          }
-          //System.out.println(curr_token);
-          line_counter++;
-        }
-      }
-      log_data.close();
+      //String log_filename = directory+"LOGS/LOG-"+participant_num+".txt";
+      //CsvReader log_data = new CsvReader(log_filename, '\n');
+      //int[] log_baseline = new int[5];
+      //int line_counter = 0;
+      //while (log_data.readRecord()) {
+      //  StringTokenizer curr_line = new StringTokenizer(log_data.getRawRecord());
+      //  while (curr_line.hasMoreTokens()) {
+      //    String curr_token = curr_line.nextToken();
+      //    if (line_counter == 0) {
+      //      log_baseline[0] = new Integer(curr_token);
+      //    }
+      //    if (line_counter == 1) {
+      //      log_baseline[1] = new Integer(curr_token);
+      //    }
+      //    if (line_counter == 2) {
+      //      log_baseline[2] = new Integer(curr_token);
+      //    }
+      //    if (line_counter == 3) {
+      //      log_baseline[3] = new Integer(curr_token);
+      //    }
+      //    if (line_counter == 4) {
+      //      log_baseline[4] = new Integer(curr_token);
+      //    }
+      //    //System.out.println(curr_token);
+      //    line_counter++;
+      //  }
+      //}
+      //log_data.close();
       
-      //System.out.println(log_baseline);
-      //System.out.println(first_condition);
-      //System.out.println(second_condition);
-      //System.out.println(third_condition);
-      //System.out.println(fourth_condition);
-      //System.out.println(baseline[0]);
-      //System.out.println(baseline[1]);
-      
-      int gap = first_condition - (baseline[0] + 30000 + 5000);
-      int rowIndex = baseline[1] + 1;
-      double num_rows_to_remove = (gap/1000)/0.16;
-      System.out.println(num_rows_to_remove);
+      //int rowIndex = 0;
+      //int gap = 0;
+      //int num_rows_to_remove = 0;
+      //for (int i=0; i<4; i++) {
+      //  if (i == 0) {
+      //    gap = log_baseline[i+1] - (log_baseline[i] + 30000 + 5000);
+      //    rowIndex = baseline[1]+1;
+      //    num_rows_to_remove = (int) ((gap/1000)/0.16);
+      //    data_matrix.subList(rowIndex,rowIndex+num_rows_to_remove+1).clear();
+      //  } else {
+      //    gap = log_baseline[i+1] - (log_baseline[i] + (6*75000) + 5000);
+      //    rowIndex += (int) (((6*75)/0.16)+1);
+      //    num_rows_to_remove = (int) ((gap/1000)/0.16);
+      //    data_matrix.subList(rowIndex,rowIndex+num_rows_to_remove+1).clear();
+      //  }
+        //System.out.println("gap: " + gap);
+        //System.out.println("rowIndex: " + rowIndex);
+        //System.out.println("rows to remove: " + num_rows_to_remove);
+      //}
+        
             
     } catch (FileNotFoundException e) {
       e.printStackTrace();
