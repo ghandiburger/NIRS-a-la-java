@@ -26,8 +26,15 @@
 5. reformat\
 	a. trim breaks\
 	b. extract rows for each condition (assume max of four conditions)\
-	c. normalize each condition\
-	d. normalize each sub-task (in moral-nirs, there are 3)\
+		*buffer each condition with 5s prior (use: (break duration - 5s  to calculate start index of condition)\
+		*condition duration is 6 (trials) * 75s (= 450 seconds)\
+		*remember to convert to rows\
+	c. normalize each trial of each condition\
+		*4 conditions\
+			*6 trials (each trial 75s long)\
+				*8 channels\
+					*subtract first value (row 0) from all values in current trial\
+	d. normalize each sub-task (in moral-nirs, there are 3) of each trial\
 \
 6. analyze (assume block design for now, use ANOVA)\
 	a. within subjects (between sub-tasks)\
