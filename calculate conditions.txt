@@ -1,0 +1,23 @@
+Sry - you'll want to leave a 5-sec buffer on the start of all conditions (I marked the change below)
+
+On Fri, Jun 8, 2012 at 2:45 PM, Megan Strait <megan.k.strait@gmail.com> wrote:
+Each log file contains 5 timestamps (in milliseconds) which are the start of each of the following:
+
+baseline
+1st condition
+2nd condition
+3rd condition
+4th condition
+
+Baseline lasts for 30 seconds and we leave a 5-sec buffer on the start of the first condition, so to calculate the gap between the end of baseline and the start of the first condition, you would take:
+gap = [1st condition start] - ( [baseline start] + 30000 + 5000) milliseconds
+rowIndex = length(baseline) + 1 (either 189 before converting to hemoglobin, or 0 after, since baseline rows are removed)
+Then remove: (gap / 1000) / 0.16 rows starting at the rowIndex.
+
+
+
+For calculating the gaps between conditions, there are 6 trials per condition (each 75 seconds long), so you would take:
+gap = [ith+1 condition start] - [ith condition + 6*75000 + 5000] milliseconds
+rowIndex += ((6*75000) / 1000) / 0.16) + 1
+
+and remove again starting at the rowIndex: (gap / 1000) / 0.16 rows

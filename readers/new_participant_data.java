@@ -1,5 +1,4 @@
 package readers;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import com.csvreader.CsvReader;
@@ -9,9 +8,8 @@ import java.util.StringTokenizer;
 public class new_participant_data {
   
   public ArrayList<ArrayList<Double>> data_matrix = new ArrayList<ArrayList<Double>>(); //init 2D arraylist
-  public ArrayList<ArrayList<Double>> final_data_matrix = new ArrayList<ArrayList<Double>>();
   public int numOfRows;
-  
+
   public void read_participant_data(int participant_num, String directory, int[] baseline) {
   
     int row_counter = 0;
@@ -67,56 +65,6 @@ public class new_participant_data {
         data_matrix.get(i).subList(8,9).clear();
         //System.out.println(data_matrix.get(i));
       }
-      
-      //String log_filename = directory+"LOGS/LOG-"+participant_num+".txt";
-      //CsvReader log_data = new CsvReader(log_filename, '\n');
-      //int[] log_baseline = new int[5];
-      //int line_counter = 0;
-      //while (log_data.readRecord()) {
-      //  StringTokenizer curr_line = new StringTokenizer(log_data.getRawRecord());
-      //  while (curr_line.hasMoreTokens()) {
-      //    String curr_token = curr_line.nextToken();
-      //    if (line_counter == 0) {
-      //      log_baseline[0] = new Integer(curr_token);
-      //    }
-      //    if (line_counter == 1) {
-      //      log_baseline[1] = new Integer(curr_token);
-      //    }
-      //    if (line_counter == 2) {
-      //      log_baseline[2] = new Integer(curr_token);
-      //    }
-      //    if (line_counter == 3) {
-      //      log_baseline[3] = new Integer(curr_token);
-      //    }
-      //    if (line_counter == 4) {
-      //      log_baseline[4] = new Integer(curr_token);
-      //    }
-      //    //System.out.println(curr_token);
-      //    line_counter++;
-      //  }
-      //}
-      //log_data.close();
-      
-      //int rowIndex = 0;
-      //int gap = 0;
-      //int num_rows_to_remove = 0;
-      //for (int i=0; i<4; i++) {
-      //  if (i == 0) {
-      //    gap = log_baseline[i+1] - (log_baseline[i] + 30000 + 5000);
-      //    rowIndex = baseline[1]+1;
-      //    num_rows_to_remove = (int) ((gap/1000)/0.16);
-      //    data_matrix.subList(rowIndex,rowIndex+num_rows_to_remove+1).clear();
-      //  } else {
-      //    gap = log_baseline[i+1] - (log_baseline[i] + (6*75000) + 5000);
-      //    rowIndex += (int) (((6*75)/0.16)+1);
-      //    num_rows_to_remove = (int) ((gap/1000)/0.16);
-      //    data_matrix.subList(rowIndex,rowIndex+num_rows_to_remove+1).clear();
-      //  }
-        //System.out.println("gap: " + gap);
-        //System.out.println("rowIndex: " + rowIndex);
-        //System.out.println("rows to remove: " + num_rows_to_remove);
-      //}
-        
             
     } catch (FileNotFoundException e) {
       e.printStackTrace();

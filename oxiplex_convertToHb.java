@@ -16,7 +16,7 @@ public class oxiplex_convertToHb {
   static int rightProbe = 39; // offset (num cols) to first DC col (right probe)
   static double samplingRate = 0.16; // seconds
   static int[] wavelength = new int[2];
-  static String directory = "E5/";
+  static String directory = "E3/";
   
   public int totalRows = 0;
   public int totalColumns = 0;
@@ -31,7 +31,7 @@ public class oxiplex_convertToHb {
   
     // EXPERIMENT-SPECIFIC VARS - set before running script
     int baselineDuration = 30;
-    int numParticipants = 10;
+    int numParticipants = 1;
     
     for (int z=1; z<(numParticipants+1); z++) {
       // calculate baseline end index
@@ -103,6 +103,11 @@ public class oxiplex_convertToHb {
       data_writer write_that_shit = new data_writer();
       write_that_shit.write_data(deoxyChannels, oxyChannels, totalHb, z, directory);
       // System.out.println(curr_data.data_matrix.get(0).get(0));
+      
+      reformat_data _reformat_data = new reformat_data();
+      _reformat_data.read_log_data(z, directory);
+      _reformat_data.calculate_condition_locations();
+      _reformat_data.grab_conditions(oxyChannels);
     }
   
   }
@@ -111,12 +116,12 @@ public class oxiplex_convertToHb {
     final long startTime = System.nanoTime();
     final long endTime;
     final int total;
-    oxiplex_convertToHb oxiplex_analysis = new oxiplex_convertToHb();
+    oxiplex_convertToHb _oxiplex_convertToHb = new oxiplex_convertToHb();
     try {
-      oxiplex_analysis.go();
+      _oxiplex_convertToHb.go();
     } finally {
       endTime = System.nanoTime();
-      total = oxiplex_analysis.totalRows * oxiplex_analysis.totalColumns;
+      total = _oxiplex_convertToHb.totalRows * _oxiplex_convertToHb.totalColumns;
     }
     final long duration = endTime - startTime;
     System.out.println("Elapsed Time: " + duration + " nanoseconds");

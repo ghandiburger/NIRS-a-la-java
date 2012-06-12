@@ -33,6 +33,8 @@ public class butterworth_filter {
     // BANDSTOP
     double Bw = u[1] - u[0];
     double Wn_center_frequency = Math.sqrt(u[0]*u[1]);
+    
+    // GET N-TH ORDER BUTTERWORTH ANALOG LOWPASS PROTOTYPE
     System.out.println(Bw);
     System.out.println(Wn_center_frequency);
   }
