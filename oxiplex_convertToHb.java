@@ -108,6 +108,7 @@ public class oxiplex_convertToHb {
       _reformat_data.read_log_data(z, directory);
       _reformat_data.calculate_condition_locations();
       _reformat_data.grab_conditions(oxyChannels);
+      _reformat_data.normalize_trials();
     }
   
   }
