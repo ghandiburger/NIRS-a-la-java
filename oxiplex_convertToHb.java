@@ -104,11 +104,26 @@ public class oxiplex_convertToHb {
       write_that_shit.write_data(deoxyChannels, oxyChannels, totalHb, z, directory);
       // System.out.println(curr_data.data_matrix.get(0).get(0));
       
-      reformat_data _reformat_data = new reformat_data();
-      _reformat_data.read_log_data(z, directory);
-      _reformat_data.calculate_condition_locations();
-      _reformat_data.grab_conditions(oxyChannels);
-      _reformat_data.normalize_trials();
+      double[][] reformatted_deoxyChannels = new double[outputSize][numChannels];
+      double[][] reformatted_oxyChannels = new double[outputSize][numChannels];
+      
+      // OXY
+      reformat_data oxy_reformat_data = new reformat_data();
+      oxy_reformat_data.read_log_data(z, directory);
+      oxy_reformat_data.calculate_condition_locations();
+      oxy_reformat_data.grab_conditions(oxyChannels);
+      oxy_reformat_data.write_data("oxy", z, "E3/pre-normalized/");
+      oxy_reformat_data.normalize_trials();
+      oxy_reformat_data.write_data("oxy", z, "E3/post-normalized/");
+      
+      // DEOXY
+      reformat_data deoxy_reformat_data = new reformat_data();
+      deoxy_reformat_data.read_log_data(z, directory);
+      deoxy_reformat_data.calculate_condition_locations();
+      deoxy_reformat_data.grab_conditions(deoxyChannels);
+      deoxy_reformat_data.write_data("deoxy", z, "E3/pre-normalized/");
+      deoxy_reformat_data.normalize_trials();
+      deoxy_reformat_data.write_data("deoxy", z, "E3/post-normalized/");
     }
   
   }

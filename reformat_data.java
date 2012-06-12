@@ -1,6 +1,9 @@
+import java.io.File;
+import java.io.FileWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import com.csvreader.CsvReader;
+import com.csvreader.CsvWriter;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -25,6 +28,7 @@ public class reformat_data {
   public int memoryTaskRows = 125;
   public int responseTaskRows = 93;
   public int moralTaskRows = 125;
+  public int trialRows = 469;
   
   public void read_log_data(int participant_num, String directory) {
     try {      
@@ -129,6 +133,12 @@ public class reformat_data {
   }
   
   public void grab_conditions(double[][] mes2hb_data) {
+  
+    //double[][] first_condition = new double[2814][mes2hb_data[0].length];
+    //double[][] second_condition = new double[2814][mes2hb_data[0].length];
+    //double[][] third_condition = new double[2814][mes2hb_data[0].length];
+    //double[][] fourth_condition = new double[2814][mes2hb_data[0].length];
+  
     for (int i=0; i<4; i++) {
         if (i == 0) {
           int arraylist_row_counter = 0;
@@ -170,20 +180,118 @@ public class reformat_data {
       }
   }
   
+  public int normalize(int length, int starting_index, ArrayList<ArrayList<Double>> data) {
+    System.out.println("###################################################################");
+    System.out.print("length: " + length +"     ");
+    System.out.print("starting_index: " + starting_index + "     ");
+    System.out.print("length+starting_index: " + (starting_index+length) + "\n");
+    
+    double[] normalizing_values = new double[data.get(starting_index).size()];
+    
+    for (int i=0; i<data.get(starting_index).size(); i++) {
+      normalizing_values[i] = data.get(starting_index).get(i);
+    }
+  
+    for (int i=starting_index; i<(starting_index+length); i++) {
+      for (int j=0; j<data.get(i).size(); j++) {
+        System.out.print("normalizing_value: " + normalizing_values[j] + "     ");
+        double curr_value = data.get(i).get(j);
+        System.out.print("curr_value: " + curr_value + "     ");
+        double normalized_value = curr_value - normalizing_values[j];
+        System.out.print("normalized_value: " + normalized_value + "\n");
+        data.get(i).set(j, normalized_value);
+      }
+    }
+    return (starting_index+length);
+  
+  }
+  
   // 1: normalize within each trial
   public void normalize_trials() {
     
-    //System.out.println("trial_length_rows: " + (75/0.16));
-    //System.out.println("pre_rest_length_rows: " +(10/0.16));
-    //System.out.println("mem_task_length_rows: " + (20/0.16));
-    //System.out.println("response_length_rows: " + (15/0.16));
-    //System.out.println("dilemma_length_rows: " + (20/0.16));
-    //System.out.println("post_rest_length_rows: " + (10/0.16));
-    //System.out.println("sum of sub rows: " + (pre_rest_length_rows+mem_task_length_rows+response_length_rows+dilemma_length_rows+post_rest_length_rows));
-    System.out.println("first_condition.size(): " + first_condition.size());
-    System.out.println("second_condition.size(): " + second_condition.size());
-    System.out.println("third_condition.size(): " + third_condition.size());
-    System.out.println("fourth_condition.size(): " + fourth_condition.size());
+    int[] task_lengths = new int[5];
+    task_lengths[0] = 63;
+    task_lengths[1] = 125;
+    task_lengths[2] = 93;
+    task_lengths[3] = 125;
+    task_lengths[4] = 63;
+    
+    int starting_index_1 = 0;
+    for (int i=0; i<6; i++) {
+      for (int j=0; j<5; j++) {
+        starting_index_1 = normalize(task_lengths[j], starting_index_1, first_condition);
+      }
+    }
+    
+    int starting_index_2 = 0;
+    for (int i=0; i<6; i++) {
+      for (int j=0; j<5; j++) {
+        starting_index_2 = normalize(task_lengths[j], starting_index_2, second_condition);
+      }
+    }
+    
+    int starting_index_3 = 0;
+    for (int i=0; i<6; i++) {
+      for (int j=0; j<5; j++) {
+        starting_index_3 = normalize(task_lengths[j], starting_index_3, third_condition);
+      }
+    }
+    
+    int starting_index_4 = 0;
+    for (int i=0; i<6; i++) {
+      for (int j=0; j<5; j++) {
+        starting_index_4 = normalize(task_lengths[j], starting_index_4, fourth_condition);
+      }
+    }
+    
+  }
+  
+  public void print_conditions() {
+    System.out.println(first_condition);
+  }
+  
+  public void write_data(String type, int participant_num, String directory) {
+    
+    String output_file = directory + "reformatted_S" + participant_num + "_" + type + ".csv";
+
+    try {
+      CsvWriter output = new CsvWriter(new FileWriter(output_file, true), ',');
+      
+      for (int i=0; i<first_condition.size(); i++) {
+        for (int j=0; j<first_condition.get(0).size(); j++) {
+          String temp = Double.toString(first_condition.get(i).get(j));
+          output.write(temp);
+        }
+        output.endRecord();
+      }
+      
+      for (int i=0; i<second_condition.size(); i++) {
+        for (int j=0; j<second_condition.get(0).size(); j++) {
+          String temp = Double.toString(second_condition.get(i).get(j));
+          output.write(temp);
+        }
+        output.endRecord();
+      }
+      
+      for (int i=0; i<third_condition.size(); i++) {
+        for (int j=0; j<third_condition.get(0).size(); j++) {
+          String temp = Double.toString(third_condition.get(i).get(j));
+          output.write(temp);
+        }
+        output.endRecord();
+      }
+      
+      for (int i=0; i<fourth_condition.size(); i++) {
+        for (int j=0; j<fourth_condition.get(0).size(); j++) {
+          String temp = Double.toString(fourth_condition.get(i).get(j));
+          output.write(temp);
+        }
+        output.endRecord();
+      }
+      
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
   
   public static void main(String[] args) {
