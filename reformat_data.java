@@ -20,6 +20,12 @@ public class reformat_data {
   public int fourth_con_start_index = 0;
   public int fourth_con_end_index = 0;
   
+  public int preRestRows = 63;
+  public int postRestRows = 63;
+  public int memoryTaskRows = 125;
+  public int responseTaskRows = 93;
+  public int moralTaskRows = 125;
+  
   public void read_log_data(int participant_num, String directory) {
     try {      
       String log_filename = directory+"LOGS/LOG-"+participant_num+".txt";
