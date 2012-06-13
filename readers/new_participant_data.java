@@ -7,6 +7,7 @@ import java.util.StringTokenizer;
 
 public class new_participant_data {
   
+  // data_matrix holds the data that is read from each participant's file
   public ArrayList<ArrayList<Double>> data_matrix = new ArrayList<ArrayList<Double>>(); //init 2D arraylist
   public int numOfRows;
 
@@ -47,23 +48,17 @@ public class new_participant_data {
         }
       }
       
-      //System.out.println("Before removal");
-      //System.out.println(data_matrix.get(0));
       // Remove unnecessary columns
       for (int i=0; i<data_matrix.size(); i++) {
         data_matrix.get(i).subList(0,10).clear();
         data_matrix.get(i).subList(8,20).clear();
         data_matrix.get(i).subList(9,17).clear();
         data_matrix.get(i).subList(17,25).clear();
-        //System.out.println(data_matrix.get(i));
       }
-      //System.out.println("After removal");
-      //System.out.println(data_matrix.get(0));
       
       // Now remove the marker column!
       for (int i=0; i<data_matrix.size(); i++) {
         data_matrix.get(i).subList(8,9).clear();
-        //System.out.println(data_matrix.get(i));
       }
             
     } catch (FileNotFoundException e) {

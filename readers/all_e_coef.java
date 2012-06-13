@@ -33,10 +33,6 @@ public class all_e_coef {
         double double_wavelength = new Double(wavelength);
         double double_deoxy = new Double(deoxy);
         double double_oxy = new Double(oxy);
-        //System.out.println("!!! FLOATS !!!");
-        //System.out.println(float_wavelength);
-        //System.out.println(float_deoxy);
-        //System.out.println(float_oxy);
         
         //make new row in coef_matrix for the current line
         coef_matrix.add(new ArrayList<Double>());
@@ -67,12 +63,11 @@ public class all_e_coef {
     }
   }
   
+  // find the e_coef based on the wavelength and oxy or deoxy type
   public double find_e(int input_wavelength, String oxydeoxy) {
     if (oxydeoxy.equals("oxy")) {
-      //System.out.println("searching for oxy e_coef");
       find_e_col = 2;
     } else if (oxydeoxy.equals("deoxy")) {
-      //System.out.println("searching for deoxy e_coef");
       find_e_col = 1;
     } else {
       System.out.println("You need to specify deoxy or oxy");
@@ -84,18 +79,15 @@ public class all_e_coef {
     for (int i=0; i<coef_matrix.size(); i++) {
       if (coef_matrix.get(i).get(0) == l) {
         lc = coef_matrix.get(i).get(find_e_col);
-        //System.out.println("lc: " + lc);
       }
     }
     for (int i=0; i<coef_matrix.size(); i++) {
       if (coef_matrix.get(i).get(0) == u) {
         uc = coef_matrix.get(i).get(find_e_col);
-        //System.out.println("uc: " + uc);
       }
     }
     
     double e = (((uc-lc)/(u-l))*(input_wavelength-l)) + lc;
-    //System.out.println(e);
     return e;
   }
 

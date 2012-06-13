@@ -10,6 +10,7 @@ import java.util.StringTokenizer;
 
 public class data_writer {
 
+  // write deoxy, oxy, and totalHb to individual CSV files
   public void write_data(double[][] deoxy, double[][] oxy, double[][] totalHb, int participant_num, String directory) {
     double[][] read_deoxy = new double[deoxy.length][deoxy[0].length];
     double[][] read_oxy = new double[oxy.length][oxy[0].length];
@@ -31,6 +32,7 @@ public class data_writer {
       }
     }
     
+    // set directory and name
     String deoxy_output_file = directory + "S" + participant_num + "_deoxy.csv";
     String oxy_output_file = directory + "S" + participant_num + "_oxy.csv";
     String totalHb_output_file = directory + "S" + participant_num + "_total.csv";
@@ -41,6 +43,7 @@ public class data_writer {
       CsvWriter oxy_output = new CsvWriter(new FileWriter(oxy_output_file, true), ',');
       CsvWriter totalHb_output = new CsvWriter(new FileWriter(totalHb_output_file, true), ',');
       
+      // read from matrices to a file
       for (int i=0; i<read_deoxy.length; i++) {
         for (int j=0; j<read_deoxy[0].length; j++) {
           String temp = Double.toString(read_deoxy[i][j]);
