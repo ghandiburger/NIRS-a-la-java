@@ -9,20 +9,21 @@ import java.util.StringTokenizer;
 
 public class reformat_data {
   
-  public int[] log_timestamps = new int[5];
-  public ArrayList<ArrayList<Double>> first_condition = new ArrayList<ArrayList<Double>>();
-  public int first_con_start_index = 0;
-  public int first_con_end_index = 0;
-  public ArrayList<ArrayList<Double>> second_condition = new ArrayList<ArrayList<Double>>();
-  public int second_con_start_index = 0;
-  public int second_con_end_index = 0;
-  public ArrayList<ArrayList<Double>> third_condition = new ArrayList<ArrayList<Double>>();
-  public int third_con_start_index = 0;
-  public int third_con_end_index = 0;
-  public ArrayList<ArrayList<Double>> fourth_condition = new ArrayList<ArrayList<Double>>();
-  public int fourth_con_start_index = 0;
-  public int fourth_con_end_index = 0;
+  public int[] log_timestamps = new int[5]; // array to hold timestamps from log file
+  public ArrayList<ArrayList<Double>> first_condition = new ArrayList<ArrayList<Double>>(); // holds the rows for first condition
+  public int first_con_start_index = 0; // first condition's start index
+  public int first_con_end_index = 0; // first condition's end index
+  public ArrayList<ArrayList<Double>> second_condition = new ArrayList<ArrayList<Double>>(); // holds the rows for second condition
+  public int second_con_start_index = 0; // second condition's start index
+  public int second_con_end_index = 0; // second condition's end index
+  public ArrayList<ArrayList<Double>> third_condition = new ArrayList<ArrayList<Double>>(); // holds the rows for third condition
+  public int third_con_start_index = 0; // third condition's start index
+  public int third_con_end_index = 0; // third condition's end index
+  public ArrayList<ArrayList<Double>> fourth_condition = new ArrayList<ArrayList<Double>>(); // holds the rows for fourth condition
+  public int fourth_con_start_index = 0; // fourth condition's start index
+  public int fourth_con_end_index = 0; // fourth condition's end index
   
+  // length of each subtask within a trial, in rows
   public int preRestRows = 63;
   public int postRestRows = 63;
   public int memoryTaskRows = 125;
@@ -30,6 +31,7 @@ public class reformat_data {
   public int moralTaskRows = 125;
   public int trialRows = 469;
   
+  // read timestamps from log file into log_timestamps[]
   public void read_log_data(int participant_num, String directory) {
     try {      
       String log_filename = directory+"LOGS/LOG-"+participant_num+".txt";
@@ -71,74 +73,60 @@ public class reformat_data {
       int gap_length_rows = 0;
       int length_of_condition_in_rows = (int) ((450000/1000)/0.16);
       int end_curr_con = 0;
-      //System.out.println("length_of_condition_in_rows RAW: " + ((450000/1000)/0.16));
-      //System.out.println("length_of_condition_in_rows ROUNDED: " + length_of_condition_in_rows);
       for (int i=0; i<4; i++) {
         if (i == 0) {
-          // this function is called AFTER the baseline rows are trimmed from the data, 
-          // so the starting row for the baseline/first-condition gap is 0
-          //System.out.println("Condition 1");
+          // calculate first condition start and end indexes
+          // calculate gap in ms between end of baseline and start of first condition
           gap_length_ms = log_timestamps[i+1] - (log_timestamps[i] + 30000 + 5000);
-          //System.out.println("gap_length_rows RAW: " + ((gap_length_ms/1000)/0.16));
+          // convert ms to rows
           gap_length_rows = (int) ((gap_length_ms/1000)/0.16);
-          //System.out.println("gap_length_rows ROUNDED: " + gap_length_rows);
+          // the data is 0-indexed, so the first condition starts at the index equal to the length of the first gap
           first_con_start_index = gap_length_rows;
+          // first condition ends at first_con_start_index + length_of_condition_in_rows
           first_con_end_index = first_con_start_index + length_of_condition_in_rows;
+          // end_curr_con gets the end index to use in the calculation of the next start index
           end_curr_con = first_con_end_index;
-          //System.out.println("start index: " + first_con_start_index);
-          //System.out.println("end index: " + first_con_end_index);
         } else if (i==1) {
-          //System.out.println("Condition 2");
+          // calculate second condition start and end indexes
+          // calculate gap in ms between end of first condition and start of second condition
           gap_length_ms = log_timestamps[i+1] - (log_timestamps[i] + (6*75000) + 5000);
-          //System.out.println("gap_length_rows RAW: " + ((gap_length_ms/1000)/0.16));
+          // convert ms to rows
           gap_length_rows = (int) ((gap_length_ms/1000)/0.16);
-          //System.out.println("gap_length_rows ROUNDED: " + gap_length_rows);
+          // end_curr_con is the currently the end of the first condition, so add the gap length in rows to find second condition's starting index
           second_con_start_index = end_curr_con + gap_length_rows;
+          // second condition ends at second_con_start_index + length_of_condition_in_rows
           second_con_end_index = second_con_start_index + length_of_condition_in_rows;
+          // end_curr_con gets the end index to use in the calculation of the next start index
           end_curr_con = second_con_end_index;
-          //System.out.println("start index: " + second_con_start_index);
-          //System.out.println("end index: " + second_con_end_index);
         } else if (i==2) {
-          //System.out.println("Condition 3");
+          // calculate third condition start and end indexes
+          // calculate gap in ms between end of second condition and start of third condition
           gap_length_ms = log_timestamps[i+1] - (log_timestamps[i] + (6*75000) + 5000);
-          //System.out.println("gap_length_rows RAW: " + ((gap_length_ms/1000)/0.16));
+          // convert ms to rows
           gap_length_rows = (int) ((gap_length_ms/1000)/0.16);
-          //System.out.println("gap_length_rows ROUNDED: " + gap_length_rows);
+           // end_curr_con is the currently the end of the second condition, so add the gap length in rows to find third condition's starting index
           third_con_start_index = end_curr_con + gap_length_rows;
+          // third condition ends at third_con_start_index + length_of_condition_in_rows
           third_con_end_index = third_con_start_index + length_of_condition_in_rows;
+          // end_curr_con gets the end index to use in the calculation of the next start index
           end_curr_con = third_con_end_index;
-          //System.out.println("start index: " + third_con_start_index);
-          //System.out.println("end index: " + third_con_end_index);
         } else if (i==3) {
-          //System.out.println("Condition 4");
+          // calculate fourth condition start and end indexes
+          // calculate gap in ms between end of third condition and start of fourth condition
           gap_length_ms = log_timestamps[i+1] - (log_timestamps[i] + (6*75000) + 5000);
-          //System.out.println("gap_length_rows RAW: " + ((gap_length_ms/1000)/0.16));
+          // convert ms to rows
           gap_length_rows = (int) ((gap_length_ms/1000)/0.16);
-          //System.out.println("gap_length_rows ROUNDED: " + gap_length_rows);
+          // end_curr_con is the currently the end of the third condition, so add the gap length in rows to find fourth condition's starting index
           fourth_con_start_index = end_curr_con + gap_length_rows;
+          // fourth condition ends at fourth_con_start_index + length_of_condition_in_rows
           fourth_con_end_index = fourth_con_start_index + length_of_condition_in_rows;
           end_curr_con = fourth_con_end_index;
-          //System.out.println("start index: " + fourth_con_start_index);
-          //System.out.println("end index: " + fourth_con_end_index);
         }
       }
-      //System.out.println("first_con_start_index: " + first_con_start_index);
-      //System.out.println("first_con_end_index: " + first_con_end_index);
-      //System.out.println("second_con_start_index: " + second_con_start_index);
-      //System.out.println("second_con_end_index: " + second_con_end_index);
-      //System.out.println("third_con_start_index: " + third_con_start_index);
-      //System.out.println("third_con_end_index: " + third_con_end_index);
-      //System.out.println("fourth_con_start_index: " + fourth_con_start_index);
-      //System.out.println("fourth_con_end_index: " + fourth_con_end_index);
   }
   
   public void grab_conditions(double[][] mes2hb_data) {
-  
-    //double[][] first_condition = new double[2814][mes2hb_data[0].length];
-    //double[][] second_condition = new double[2814][mes2hb_data[0].length];
-    //double[][] third_condition = new double[2814][mes2hb_data[0].length];
-    //double[][] fourth_condition = new double[2814][mes2hb_data[0].length];
-  
+    // grab each condition from mes2hb_data and place in appropriate arraylist
     for (int i=0; i<4; i++) {
         if (i == 0) {
           int arraylist_row_counter = 0;
@@ -180,11 +168,8 @@ public class reformat_data {
       }
   }
   
+  // normalize each subtask
   public int normalize(int length, int starting_index, ArrayList<ArrayList<Double>> data) {
-    System.out.println("###################################################################");
-    System.out.print("length: " + length +"     ");
-    System.out.print("starting_index: " + starting_index + "     ");
-    System.out.print("length+starting_index: " + (starting_index+length) + "\n");
     
     double[] normalizing_values = new double[data.get(starting_index).size()];
     
@@ -194,11 +179,8 @@ public class reformat_data {
   
     for (int i=starting_index; i<(starting_index+length); i++) {
       for (int j=0; j<data.get(i).size(); j++) {
-        System.out.print("normalizing_value: " + normalizing_values[j] + "     ");
         double curr_value = data.get(i).get(j);
-        System.out.print("curr_value: " + curr_value + "     ");
         double normalized_value = curr_value - normalizing_values[j];
-        System.out.print("normalized_value: " + normalized_value + "\n");
         data.get(i).set(j, normalized_value);
       }
     }
@@ -206,9 +188,9 @@ public class reformat_data {
   
   }
   
-  // 1: normalize within each trial
   public void normalize_trials() {
     
+    // set lengths of each subtask, in rows
     int[] task_lengths = new int[5];
     task_lengths[0] = 63;
     task_lengths[1] = 125;
@@ -216,6 +198,7 @@ public class reformat_data {
     task_lengths[3] = 125;
     task_lengths[4] = 63;
     
+    // normalize first condition
     int starting_index_1 = 0;
     for (int i=0; i<6; i++) {
       for (int j=0; j<5; j++) {
@@ -223,6 +206,7 @@ public class reformat_data {
       }
     }
     
+    // normalize second condition
     int starting_index_2 = 0;
     for (int i=0; i<6; i++) {
       for (int j=0; j<5; j++) {
@@ -230,6 +214,7 @@ public class reformat_data {
       }
     }
     
+    // normalize third condition
     int starting_index_3 = 0;
     for (int i=0; i<6; i++) {
       for (int j=0; j<5; j++) {
@@ -237,6 +222,7 @@ public class reformat_data {
       }
     }
     
+    // normalize fourth condition
     int starting_index_4 = 0;
     for (int i=0; i<6; i++) {
       for (int j=0; j<5; j++) {
@@ -252,11 +238,13 @@ public class reformat_data {
   
   public void write_data(String type, int participant_num, String directory) {
     
+    // set the name, location, and type of the output file
     String output_file = directory + "reformatted_S" + participant_num + "_" + type + ".csv";
 
     try {
       CsvWriter output = new CsvWriter(new FileWriter(output_file, true), ',');
       
+      // write first condition
       for (int i=0; i<first_condition.size(); i++) {
         for (int j=0; j<first_condition.get(0).size(); j++) {
           String temp = Double.toString(first_condition.get(i).get(j));
@@ -265,6 +253,7 @@ public class reformat_data {
         output.endRecord();
       }
       
+      // write second condition
       for (int i=0; i<second_condition.size(); i++) {
         for (int j=0; j<second_condition.get(0).size(); j++) {
           String temp = Double.toString(second_condition.get(i).get(j));
@@ -273,6 +262,7 @@ public class reformat_data {
         output.endRecord();
       }
       
+      // write third condition
       for (int i=0; i<third_condition.size(); i++) {
         for (int j=0; j<third_condition.get(0).size(); j++) {
           String temp = Double.toString(third_condition.get(i).get(j));
@@ -281,6 +271,7 @@ public class reformat_data {
         output.endRecord();
       }
       
+      // write fourth condition
       for (int i=0; i<fourth_condition.size(); i++) {
         for (int j=0; j<fourth_condition.get(0).size(); j++) {
           String temp = Double.toString(fourth_condition.get(i).get(j));

@@ -40,70 +40,77 @@ public class oxiplex_convertToHb {
       baseline[1] = baseline[0] + baseline_calc;
       
       // read in participant data
+      // see readers/new_participant_data.java
       new_participant_data curr_data = new new_participant_data();
       curr_data.read_participant_data(z, directory, baseline);
     
       totalRows = totalRows + curr_data.data_matrix.size();
       totalColumns = totalColumns + curr_data.data_matrix.get(0).size();
       
+      // determine the number of rows that will be output from mes2hb
       int outputSize = curr_data.data_matrix.size() - baseline[1];
-
+      
+      // make arrays to hold deoxy, oxy, and totalHb from mes2hb
       double[][] deoxyChannels = new double[outputSize][numChannels];
       double[][] oxyChannels = new double[outputSize][numChannels];
       double[][] totalHb = new double[outputSize][numChannels];
       
       for (int i=0; i<numChannels; i++) {
-        //System.out.println("@@@@@@@@@@     channel " + i + " started     @@@@@@@@@@");
+        // 2D array list to hold participant data for each channel
         ArrayList<ArrayList<Double>> channel = new ArrayList<ArrayList<Double>>();
         if (i < numChannels/2) {
           for (int j=0; j<curr_data.data_matrix.size(); j++) {
+            // add a new row to channel
             channel.add(new ArrayList<Double>());
+            // grab participant data for the channels
+            // 690 wavelength
             channel.get(j).add(curr_data.data_matrix.get(j).get(i+pairOffset));
+            // 830 wavelength
             channel.get(j).add(curr_data.data_matrix.get(j).get(i));
-            //System.out.println("Channel: " + i + "   Row: " + j + "   Column: " + (i+pairOffset) + "   curr_data: " + curr_data.data_matrix.get(j).get(i+pairOffset) + "   channel: " + channel.get(j).get(0));
-            //System.out.println("Channel: " + i + "   Row: " + j + "   Column: " + (i) + "   curr_data: " + curr_data.data_matrix.get(j).get(i) + "   channel: " + channel.get(j).get(1));
           }
-          //System.out.println("##########     channel " + i + " finished     ##########");
         } else {
           for (int j=0; j<curr_data.data_matrix.size(); j++) {
+            // add a new row to channel
             channel.add(new ArrayList<Double>());
+            // grab participant data for the channels
+            // 690 wavelength
             channel.get(j).add(curr_data.data_matrix.get(j).get(i+chOffset+pairOffset));
+            // 830 wavelength
             channel.get(j).add(curr_data.data_matrix.get(j).get(i+chOffset));
-            //System.out.println("Channel: " + i + "   Row: " + j + "   Column: " + (i+chOffset+pairOffset) + "   curr_data: " + curr_data.data_matrix.get(j).get(i+chOffset+pairOffset) + "   channel: " + channel.get(j).get(0));
-            //System.out.println("Channel: " + i + "   Row: " + j + "   Column: " + (i+chOffset) + "   curr_data: " + curr_data.data_matrix.get(j).get(i+chOffset) + "   channel: " + channel.get(j).get(1));
           }
-          //System.out.println("##########     channel " + i + " finished     ##########");
         }
-        // Xu Cui's mes2hb conversion function
-        //System.out.println("**********     mes2hb running     **********");
+        
+        // call Xu Cui's mes2hb conversion function, passing channel arraylist, wavelength array, and baseline array
+        // see mes2hb.java
         mes2hb thing = new mes2hb();
         thing.mes2hb_go(channel, wavelength, baseline);
         
+        // mes2hb_go object contains 3 arraylists for oxy, deoxy, and totalHb data
+        // mes2hb operates on 1 channel at a time, so these arrays hold the channel that was just converted by mes2hb
         Double [] temp_mes2hb_hb = thing.mes2hb_hb.toArray(new Double[thing.mes2hb_hb.size()]);
         Double [] temp_mes2hb_hbo = thing.mes2hb_hbo.toArray(new Double[thing.mes2hb_hbo.size()]);
         Double [] temp_mes2hb_hbt = thing.mes2hb_hbt.toArray(new Double[thing.mes2hb_hbt.size()]);
         
-        //System.out.println("***** deoxyChannels[][] *****");
+        // put the deoxy values in the appropriate column by current channel
         for (int a=0; a<temp_mes2hb_hb.length; a++) {
           deoxyChannels[a][i] = temp_mes2hb_hb[a];
-          //System.out.println(deoxyChannels[a][i]);
         }
-        //System.out.println("***** oxyChannels[][] *****");
+        // put the oxy values in the appropriate column by current channel
         for (int a=0; a<temp_mes2hb_hbo.length; a++) {
           oxyChannels[a][i] = temp_mes2hb_hbo[a];
-          //System.out.println(oxyChannels[a][i]);
         }
-        //System.out.println("***** totalHb[][] *****");
+        // put the total values in the appropriate column by current channel
         for (int a=0; a<temp_mes2hb_hbt.length; a++) {
           totalHb[a][i] = temp_mes2hb_hbt[a];
-          //System.out.println(totalHb[a][i]);
         }
       }
       
-      data_writer write_that_shit = new data_writer();
-      write_that_shit.write_data(deoxyChannels, oxyChannels, totalHb, z, directory);
-      // System.out.println(curr_data.data_matrix.get(0).get(0));
+      // write the deoxy, oxy, and totalHb data to spearate .csv files
+      // see readers/data_writer.java
+      data_writer write = new data_writer();
+      write.write_data(deoxyChannels, oxyChannels, totalHb, z, directory);
       
+      // see reformat_data.java for details on this section
       double[][] reformatted_deoxyChannels = new double[outputSize][numChannels];
       double[][] reformatted_oxyChannels = new double[outputSize][numChannels];
       
@@ -129,6 +136,8 @@ public class oxiplex_convertToHb {
   }
 
   public static void main(String[] args) {
+    // this junk is just to time the function
+    // and I was curious about how many numbers the program was actually working with
     final long startTime = System.nanoTime();
     final long endTime;
     final int total;
